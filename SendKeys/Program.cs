@@ -80,8 +80,9 @@ namespace SendKey
                             }
                         }
 
-                        if (Sender(recieved_msg) && !(recieved_msg.key == ConsoleKey.F10 && recieved_msg.cm.ToString().Contains("Control")))
-                            Console.WriteLine("Error sending key.");
+                        if (!(recieved_msg.key == ConsoleKey.F10 && recieved_msg.cm.ToString().Contains("Control")))
+                            if (Sender(recieved_msg))
+                                Console.WriteLine("Error sending key.");
                     }
 
             }
