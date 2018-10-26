@@ -38,26 +38,19 @@ namespace SendKey
                     ConsoleKeyInfo press;
                     while ((press = Console.ReadKey()).Key != ConsoleKey.Escape)
                     {
-                        VirtualKeyCode keyvs = (VirtualKeyCode)press.Key;
                         send.key = press.Key;
                         send.cm = press.Modifiers;
                         string msg = SerializeObject<key_st>(send);
                         Console.Clear();
                         net.send(ip, msg);
-                        if(args[2]=="-synccp")
-                        {
-                            if(send.key == ConsoleKey.F10 && send.cm.ToString().Contains("Control"))
-                            {
-                                Thread.Sleep(10);
-                                _net._rec data = net.receive();
-                                
-                                cp_st rec_cp = DeserializeObject<cp_st>(data.message);
-                                if (rec_cp.clipboard_contents == "")
-                                    continue;
-                                Clipboard.SetText(rec_cp.clipboard_contents);
-                            }
-                        }
-                    }
+                        Thread.Sleep(10);
+                        _net._rec data = net.receive();
+
+                        cp_st rec_cp = DeserializeObject<cp_st>(data.message);
+                        if (rec_cp.clipboard_contents == "")
+                            continue;
+                        Clipboard.SetText(rec_cp.clipboard_contents);
+                    }  
                     break;
                 case "-receiver":
                     while (true)
@@ -66,23 +59,8 @@ namespace SendKey
                         if (rec.message == "")
                             continue;
                         key_st recieved_msg = DeserializeObject<key_st>(Encoding.UTF8.GetString(Encoding.ASCII.GetBytes(rec.message)));
-                        if (args[2] == "-synccp")
-                        {
-                            if (recieved_msg.key == ConsoleKey.F10 && recieved_msg.cm.ToString().Contains("Control"))
-                            {
-                                key_st temp = new key_st();
-                                temp.key = ConsoleKey.C;
-                                temp.cm = ConsoleModifiers.Control;
-                                Sender(temp);
-                                cp_st send_cp = new cp_st();
-                                send_cp.clipboard_contents = Clipboard.GetText();
-                                net.send(rec.ip, SerializeObject<cp_st>(send_cp));
-                            }
-                        }
-
-                        if (!(recieved_msg.key == ConsoleKey.F10 && recieved_msg.cm.ToString().Contains("Control")))
-                            if (Sender(recieved_msg))
-                                Console.WriteLine("Error sending key.");
+                        if (Sender(recieved_msg))
+                            Console.WriteLine("Error sending key.");
                     }
 
             }
@@ -101,7 +79,7 @@ namespace SendKey
                 if (send.cm.ToString().Contains("Shift"))
                     modkey.Add(VirtualKeyCode.SHIFT);
                 if (modkey.Count == 0)
-                    sim.Keyboard.ModifiedKeyStroke(0, (VirtualKeyCode)received_msg.key);
+                    sim.Keyboard.ModifiedKeyStroke(0, (VirtualKeyCode)(received_msg.key.ToString().ToLower()[0]));
                 else
                     sim.Keyboard.ModifiedKeyStroke(modkey, (VirtualKeyCode)received_msg.key);
                 return false;
