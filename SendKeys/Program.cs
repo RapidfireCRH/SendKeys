@@ -44,19 +44,6 @@ namespace SendKey
                         string msg = SerializeObject<key_st>(send);
                         Console.Clear();
                         net.send(ip, msg);
-                        if(args[2]=="-synccp")
-                        {
-                            if(send.key == ConsoleKey.F10 && send.cm.ToString().Contains("Control"))
-                            {
-                                Thread.Sleep(10);
-                                _net._rec data = net.receive();
-                                
-                                cp_st rec_cp = DeserializeObject<cp_st>(data.message);
-                                if (rec_cp.clipboard_contents == "")
-                                    continue;
-                                Clipboard.SetText(rec_cp.clipboard_contents);
-                            }
-                        }
                     }
                     break;
                 case "-receiver":
@@ -93,11 +80,11 @@ namespace SendKey
             {
                 InputSimulator sim = new InputSimulator();
                 List<VirtualKeyCode> modkey = new List<VirtualKeyCode>();
-                if (send.cm.ToString().Contains("Control"))
+                if (received_msg.cm.ToString().Contains("Control"))
                     modkey.Add(VirtualKeyCode.CONTROL);
-                if (send.cm.ToString().Contains("Alt"))
+                if (received_msg.cm.ToString().Contains("Alt"))
                     modkey.Add(VirtualKeyCode.MENU);
-                if (send.cm.ToString().Contains("Shift"))
+                if (received_msg.cm.ToString().Contains("Shift"))
                     modkey.Add(VirtualKeyCode.SHIFT);
                 if (modkey.Count == 0)
                     sim.Keyboard.ModifiedKeyStroke(0, (VirtualKeyCode)received_msg.key);
