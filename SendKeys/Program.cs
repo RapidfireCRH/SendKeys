@@ -72,7 +72,7 @@ namespace SendKey
                 if (send.cm.ToString().Contains("Shift"))
                     modkey.Add(VirtualKeyCode.SHIFT);
                 if (modkey.Count == 0)
-                    sim.Keyboard.KeyPress((VirtualKeyCode)received_msg.key.ToString().ToLower()[0]);
+                    sim.Keyboard.TextEntry(received_msg.key.ToString().ToLower());
                 else
                     sim.Keyboard.ModifiedKeyStroke(modkey, (VirtualKeyCode)received_msg.key);
                 return false;
