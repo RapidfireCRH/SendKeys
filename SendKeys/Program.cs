@@ -43,13 +43,6 @@ namespace SendKey
                         string msg = SerializeObject<key_st>(send);
                         Console.Clear();
                         net.send(ip, msg);
-                        Thread.Sleep(10);
-                        _net._rec data = net.receive();
-
-                        cp_st rec_cp = DeserializeObject<cp_st>(data.message);
-                        if (rec_cp.clipboard_contents == "")
-                            continue;
-                        Clipboard.SetText(rec_cp.clipboard_contents);
                     }  
                     break;
                 case "-receiver":
@@ -79,7 +72,7 @@ namespace SendKey
                 if (send.cm.ToString().Contains("Shift"))
                     modkey.Add(VirtualKeyCode.SHIFT);
                 if (modkey.Count == 0)
-                    sim.Keyboard.ModifiedKeyStroke(0, (VirtualKeyCode)(received_msg.key.ToString().ToLower()[0]));
+                    sim.Keyboard.ModifiedKeyStroke(0, (VirtualKeyCode)(ConsoleKey)(received_msg.key.ToString().ToLower()[0]));
                 else
                     sim.Keyboard.ModifiedKeyStroke(modkey, (VirtualKeyCode)received_msg.key);
                 return false;
