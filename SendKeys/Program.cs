@@ -53,21 +53,8 @@ namespace SendKey
                         if (rec.message == "")
                             continue;
                         key_st recieved_msg = DeserializeObject<key_st>(Encoding.UTF8.GetString(Encoding.ASCII.GetBytes(rec.message)));
-                        if (args[2] == "-synccp")
-                        {
-                            if (recieved_msg.key == ConsoleKey.F10 && recieved_msg.cm.ToString().Contains("Control"))
-                            {
-                                key_st temp = new key_st();
-                                temp.key = ConsoleKey.C;
-                                temp.cm = ConsoleModifiers.Control;
-                                Sender(temp);
-                                cp_st send_cp = new cp_st();
-                                send_cp.clipboard_contents = Clipboard.GetText();
-                                net.send(rec.ip, SerializeObject<cp_st>(send_cp));
-                            }
-                        }
 
-                        if (Sender(recieved_msg) && !(recieved_msg.key == ConsoleKey.F10 && recieved_msg.cm.ToString().Contains("Control")))
+                        if (Sender(recieved_msg))
                             Console.WriteLine("Error sending key.");
                     }
 
