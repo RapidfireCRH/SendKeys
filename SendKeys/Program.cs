@@ -30,7 +30,6 @@ namespace SendKey
         [STAThread]
         static void Main(string[] args)
         {
-
             IPAddress ip = IPAddress.Parse(args[0]);
             switch(args[1])
             {
@@ -41,7 +40,7 @@ namespace SendKey
                         VirtualKeyCode keyvs = (VirtualKeyCode)press.Key;
                         send.key = press.Key;
                         send.cm = press.Modifiers;
-                        string msg = SerializeObject<key_st>(send);
+                        string msg = net.SerializeObject<key_st>(send);
                         Console.Clear();
                         net.send(ip, msg);
                     }
@@ -52,12 +51,11 @@ namespace SendKey
                         _net._rec rec = net.receive();
                         if (rec.message == "")
                             continue;
-                        key_st recieved_msg = DeserializeObject<key_st>(Encoding.UTF8.GetString(Encoding.ASCII.GetBytes(rec.message)));
+                        key_st recieved_msg = net.DeserializeObject<key_st>(Encoding.UTF8.GetString(Encoding.ASCII.GetBytes(rec.message)));
 
                         if (Sender(recieved_msg))
                             Console.WriteLine("Error sending key.");
                     }
-
             }
         }
 
@@ -85,38 +83,6 @@ namespace SendKey
             }
         }
 
-        public static string SerializeObject<T>(T objectToSerialize)
-        {
-            BinaryFormatter bf = new BinaryFormatter();
-            MemoryStream memStr = new MemoryStream();
-
-            try
-            {
-                bf.Serialize(memStr, objectToSerialize);
-                memStr.Position = 0;
-
-                return Convert.ToBase64String(memStr.ToArray());
-            }
-            finally
-            {
-                memStr.Close();
-            }
-        }
-
-        public static T DeserializeObject<T>(string str)
-        {
-            BinaryFormatter bf = new BinaryFormatter();
-            byte[] b = Convert.FromBase64String(str);
-            MemoryStream ms = new MemoryStream(b);
-
-            try
-            {
-                return (T)bf.Deserialize(ms);
-            }
-            finally
-            {
-                ms.Close();
-            }
-        }
+        
     }
 }
