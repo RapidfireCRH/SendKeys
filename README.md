@@ -1,5 +1,7 @@
 SendKeys sends keystrokes entered into the console window to the target computer.
 
+*----------------------------------------------------------------*
+
 Switches are as follows:
 
 SendKeys ip-address -[Sender:Receiver]
@@ -8,7 +10,7 @@ SendKeys ip-address -[Sender:Receiver]
 
 -Receiver: Receives from any ipaddress on 8123 and sends key to the screen
 
-
+*----------------------------------------------------------------*
 
 Limitations:
 
